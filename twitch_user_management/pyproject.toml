@@ -1,0 +1,166 @@
+[project]
+name = 'user_management'
+version = '0.0.1'
+description = 'Django application as user management system for twitch polling api'
+keywords = [
+  'users',
+  'authentication',
+]
+
+dependencies = [
+    # Django related packages
+    'django~=4.2',
+    'django-filter',
+    'django-extensions',
+    'djangorestframework',
+    'drf-spectacular[sidecar]',
+    'pydantic',
+    # Database driver, settings, etc.
+    'psycopg[binary]',
+    'python-decouple',
+    'ipython',
+    'rich>=13.8.0',
+    # Celery
+    'celery~=5.3.6',
+    'django-celery-beat',
+    'django-celery-results',
+    'orjson>=3.10.18',
+    'django-cors-headers>=4.7.0',
+    "djangorestframework-simplejwt>=5.5.0",
+    'django-viewflow==1.11',
+    'redis>=6.2.0',
+    "djoser>=2.3.1",
+    'gunicorn>=23.0.0',
+]
+
+maintainers = [{name = 'Ali Abharya', email = 'abharya.dev@gmail.ir'}]
+authors = [{name = 'Ali Abharya', email = 'abharya.dev@gmail.ir'}]
+requires-python = '>=3.11'
+
+[tool.coverage.run]
+relative_files = true
+branch = true
+omit = [
+    './venv/*',
+    '*/tests/*',
+    '*/test_*.py',
+    '*/*_test.py',
+    '*/*_tests.py',
+    '*/apps.py',
+    'manage.py',
+    '*/__init__.py',
+    '*/*/__init__.py',
+    '*/migrations/*',
+    '*asgi*',
+    '*wsgi*',
+    '*/admin.py',
+    '*/urls.py',
+    './root/settings/*.py',
+    './root/loggers.py',
+    './root/sentry.py',
+    './common/admin/samta_admin.py',
+    './common/healthchecks.py',
+    './update_scripts/*.py'
+]
+
+[tool.pytest.ini_options]
+addopts = '-ra -p no:warnings'
+DJANGO_SETTINGS_MODULE = 'root.settings.test'
+python_files = 'tests.* test_*.py tests_*.py *_tests.py *_test.py'
+
+[tool.bandit]
+skips = []
+exclude_dirs = [
+    '*/settings/*.py',
+    '*/migrations/*.py',
+    '*/tests/*',
+    '*/test_*.py',
+    '*/test.py',
+    '*/*_test.py',
+    '*/*_tests.py',
+    'root/settings/test.py',
+    'docs',
+    'venv',
+    'deploy',
+    '*/factories.py'
+]
+
+[tool.ruff]
+exclude = [
+    '.eggs',
+    '.git',
+    '.ipynb_checkpoints',
+    '.mypy_cache',
+    '.nox',
+    '.pants.d',
+    '.pyenv',
+    '.pytest_cache',
+    '.pytype',
+    '.ruff_cache',
+    '.tox',
+    '.venv',
+    '.vscode',
+    '__pypackages__',
+    '_build',
+    'build',
+    'dist',
+    'node_modules',
+    'migrations',
+    'settings',
+    'site-packages',
+    'venv',
+    'e2e'
+]
+include = ['*.py']
+line-length = 120
+output-format = 'grouped'
+target-version = 'py311'
+
+[tool.ruff.lint]
+select = [
+  'DJ', # https://docs.astral.sh/ruff/rules/#flake8-django-dj
+  'S', # https://docs.astral.sh/ruff/rules/#flake8-bandit-s
+  'SIM', # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+  'C4', # https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
+  'E', # https://docs.astral.sh/ruff/rules/#error-e
+  'F', # https://docs.astral.sh/ruff/rules/#pyflakes-f
+  'BLE', # https://docs.astral.sh/ruff/rules/#flake8-blind-except-ble
+  'I', # https://docs.astral.sh/ruff/rules/#isort-i
+  'B', # https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+  'N', # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  'ERA' # https://docs.astral.sh/ruff/rules/#eradicate-era
+]
+ignore = [
+  'E501', # https://docs.astral.sh/ruff/rules/line-too-long/
+  'DJ001', # https://docs.astral.sh/ruff/rules/django-nullable-model-string-field/
+  'N806' # https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function/
+]
+fixable = ['I']
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = ['F401']
+'*test*.py' = ['S']
+'*factories*.py' = ['S']
+'debug_script.py' = ['E402']
+
+[tool.ruff.format]
+quote-style = 'single'
+docstring-code-format = true
+
+[tool.uv]
+dev-dependencies = [
+    # development debug
+    'django-debug-toolbar>=4.4.6',
+    # unit test
+    'factory-boy',
+    'pytest',
+    'pytest-django',
+    'pytest-factoryboy',
+    'pytest-xdist[psutil]',
+    'pytest-sugar>=1.0.0',
+    'coverage',
+    'pytest-cov',
+    # code quality
+    'pre-commit>=3.8.0',
+    'ruff>=0.6.4',
+]

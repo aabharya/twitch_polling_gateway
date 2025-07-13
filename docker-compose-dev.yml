@@ -1,0 +1,69 @@
+volumes:
+  POLLING_DATA:
+  USER_MANAGEMENT_DATA:
+
+networks:
+  POLLING_BACKEND:
+
+services:
+  polling_db:
+    image: "postgres:15-alpine"
+    restart: "no"
+    ports:
+      - "5314:5432"
+    env_file:
+      - deploy/envs/polling_api/database.env
+
+    volumes:
+      - POLLING_DATA:/db_data
+    networks:
+      - POLLING_BACKEND
+
+  redis:
+    image: "redis:alpine"
+    restart: unless-stopped
+    networks:
+      - POLLING_BACKEND
+    ports:
+      - "63790:6379"
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: celery.Dockerfile
+    volumes:
+      - ./twitch_polling_api:/home/twitch_polling_api
+    env_file:
+      - deploy/envs/polling_api/celery.env
+    networks:
+      - POLLING_BACKEND
+    depends_on:
+      - polling_db
+      - redis
+
+  user_management_db:
+    image: "postgres:15-alpine"
+    restart: "no"
+    ports:
+      - "5313:5432"
+    env_file:
+      - deploy/envs/user_management/database.env
+    volumes:
+      - USER_MANAGEMENT_DATA:/db_data
+    networks:
+      - POLLING_BACKEND
+
+  user_management:
+    build:
+      context: .
+      dockerfile: user_management.Dockerfile
+    volumes:
+      - ./twitch_user_management/src:/home/user_management
+    depends_on:
+      - user_management_db
+    networks:
+      - POLLING_BACKEND
+    ports:
+      - "8000:8000"
+    env_file:
+      - deploy/envs/user_management/server.env

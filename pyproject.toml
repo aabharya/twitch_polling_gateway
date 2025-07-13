@@ -1,0 +1,97 @@
+[project]
+name = 'twitch_polling_api'
+version = '0.1.0'
+description = 'Minimal Twitch Polling API'
+keywords = [
+  'polling',
+  'twitch',
+]
+maintainers = [{name = 'Ali Abharya', email = 'abharya.dev@gmail.ir'}]
+authors = [{name = 'Ali Abharya', email = 'abharya.dev@gmail.ir'}]
+requires-python = '>=3.11'
+
+dependencies = [
+    'fastapi[standard]',
+    'pydantic[email]',
+    'pydantic-settings',
+    'aiohttp',
+    'sentry-asgi',
+    'bcrypt',
+    'python-jose',
+    'typer',
+    'rich',
+    'psycopg2-binary',
+    'sqlalchemy',
+    'sqlalchemy-filters',
+    'sqlalchemy-utils',
+    'alembic',
+    'pytz',
+    'celery>=5.5.3',
+    'redis>=6.2.0',
+]
+
+[tool.uv]
+dev-dependencies = [
+    # unit test
+    'factory-boy',
+    'pytest',
+    'faker',
+    # code quality
+    'pre-commit>=3.8.0',
+    'ruff>=0.6.4',
+]
+
+[tool.ruff]
+exclude = [
+    '.eggs',
+    '.git',
+    '.ipynb_checkpoints',
+    '.mypy_cache',
+    '.nox',
+    '.pants.d',
+    '.pyenv',
+    '.pytest_cache',
+    '.pytype',
+    '.ruff_cache',
+    '.tox',
+    '.venv',
+    '.vscode',
+    '__pypackages__',
+    '_build',
+    'build',
+    'dist',
+    'node_modules',
+    'migrations',
+    'settings',
+    'site-packages',
+    'venv',
+    'post_views_pb2_grpc.py',
+    'post_views_pb2.py'
+]
+src = ['twitch_polling_api']
+include = ['*.py']
+line-length = 120
+output-format = 'grouped'
+target-version = 'py311'
+
+[tool.ruff.lint]
+# S = Bandit Security
+# SIM = Simplify
+# E = Pycodestyle Error
+# F = Pyflask
+# C4 = Comprehensions
+# BLE = Blind Exception
+# I = Isort
+# B = Flake8 Bugbear
+select = ['S', 'SIM', 'C4', 'E', 'F', 'BLE', 'I', 'B', 'N', 'ERA']
+ignore = ['E501', 'N802', 'N806', 'N815']
+fixable = ['I']
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = ['F401']
+'*test*.py' = ['S']
+'*factories*.py' = ['S']
+
+[tool.ruff.format]
+quote-style = 'single'
+docstring-code-format = true

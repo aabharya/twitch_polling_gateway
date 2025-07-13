@@ -1,0 +1,64 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# Local settings
+.env
+*.env
+
+# Django-specific files
+db.sqlite3
+/media/
+staticfiles/
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Logs
+*.log
+*.out
+*.err
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# MacOS files
+.DS_Store
+*.AppleDouble
+.Trashes
+
+# Docker-specific files
+Dockerfile
+docker-compose.yml
+*.dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Coverage reports
+htmlcov/
+.coverage
+.cache/
