@@ -54,6 +54,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = 'HS256'
     JWT_LIFETIME: int = 300  # Seconds
     JWT_USER_KEY: str
+    GATEWAY_PREFIX: str
 
 
 settings = Settings()
@@ -62,6 +63,6 @@ app_configs: dict[str, Any] = {
     'title': 'Twitch Polling API',
     'description': 'Minimal twitch polling api built with FastAPI',
     'debug': settings.DEBUG,
-    'root_path': '/api/v1',
+    'root_path': f'/{settings.GATEWAY_PREFIX}api/polling/v1',
     'swagger_ui_parameters': {'defaultModelsExpandDepth': -1},
 }
