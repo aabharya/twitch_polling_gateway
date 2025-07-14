@@ -30,12 +30,12 @@ services:
   celery-worker:
     build:
       context: .
-      dockerfile: celery.Dockerfile
+      dockerfile: celery_worker.Dockerfile
     volumes:
-      - ./twitch_polling_api:/home/twitch_polling_api
+      - ./polling_api:/home/polling_api
     env_file:
-      - deploy/envs/celery.env
-      - deploy/envs/polling_server.env
+      - deploy/envs/celery_worker.env
+      - deploy/envs/polling_api.env
       - deploy/envs/jwt.env
     networks:
       - POLLING_BACKEND
@@ -43,7 +43,7 @@ services:
       - polling_db
       - redis
 
-  user_management_db:
+  users_db:
     image: "postgres:15-alpine"
     restart: "no"
     ports:
@@ -55,19 +55,19 @@ services:
     networks:
       - POLLING_BACKEND
 
-  user_management:
+  users_api:
     build:
       context: .
-      dockerfile: user_management.Dockerfile
+      dockerfile: users_api.Dockerfile
     volumes:
-      - ./twitch_user_management/src:/home/user_management
+      - ./users_api/src:/home/users_api
     depends_on:
-      - user_management_db
+      - users_db
     networks:
       - POLLING_BACKEND
     ports:
       - "8000:8000"
     env_file:
-      - deploy/envs/users_server.env
-      - deploy/envs/celery.env
+      - deploy/envs/users_api.env
+      - deploy/envs/celery_worker.env
       - deploy/envs/jwt.env
