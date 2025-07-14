@@ -173,7 +173,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=config('JWT_LIFETIME', default=300, cast=int)),
     'ALGORITHM': config('JWT_ALGORITHM', default='HS256'),
     'SIGNING_KEY': config('JWT_SIGNING_KEY', default='', cast=str).replace('\\n', '\n'),
-    'USER_ID_FIELD': 'public_id',
+    'USER_ID_FIELD': config('JWT_USER_KEY', default='', cast=str),
 }
 
 DJOSER = {

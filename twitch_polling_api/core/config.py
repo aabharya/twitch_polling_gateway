@@ -50,8 +50,8 @@ class Settings(BaseSettings):
     REDIS_ULR: str
     CELERY_BROKER_URL: str
     CELERY_RESULT_BACKEND: str
-    JWT_SECRET: str
-    JWT_ALG: str = 'HS256'
+    JWT_SIGNING_KEY: str
+    JWT_ALGORITHM: str = 'HS256'
     JWT_LIFETIME: int = 300  # Seconds
 
 

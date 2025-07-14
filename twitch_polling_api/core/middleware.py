@@ -51,7 +51,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             if not authorization or scheme.lower() != 'bearer':
                 raise NoAuthenticationHeaderError()
             token = authorization.split()[1]
-            data = jwt.decode(token, settings.JWT_SECRET)
+            data = jwt.decode(token, settings.JWT_SIGNING_KEY)
             request.state.user = AuthenticatedUser(public_id=data['user_id'])
         except (NoAuthenticationHeaderError, JWKError, JWTError, JWTClaimsError, ExpiredSignatureError):
             request.state.user = AnonymousUser()

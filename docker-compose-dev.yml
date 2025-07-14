@@ -12,7 +12,7 @@ services:
     ports:
       - "5314:5432"
     env_file:
-      - deploy/envs/polling_api/database.env
+      - deploy/envs/polling_db.env
 
     volumes:
       - POLLING_DATA:/db_data
@@ -34,7 +34,9 @@ services:
     volumes:
       - ./twitch_polling_api:/home/twitch_polling_api
     env_file:
-      - deploy/envs/polling_api/celery.env
+      - deploy/envs/celery.env
+      - deploy/envs/polling_server.env
+      - deploy/envs/jwt.env
     networks:
       - POLLING_BACKEND
     depends_on:
@@ -47,7 +49,7 @@ services:
     ports:
       - "5313:5432"
     env_file:
-      - deploy/envs/user_management/database.env
+      - deploy/envs/users_db.env
     volumes:
       - USER_MANAGEMENT_DATA:/db_data
     networks:
@@ -66,4 +68,6 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - deploy/envs/user_management/server.env
+      - deploy/envs/users_server.env
+      - deploy/envs/celery.env
+      - deploy/envs/jwt.env
