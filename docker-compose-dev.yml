@@ -9,15 +9,14 @@ services:
   polling_db:
     image: "postgres:15-alpine"
     restart: "no"
-    ports:
-      - "5314:5432"
     env_file:
       - deploy/envs/polling_db.env
-
     volumes:
       - POLLING_DATA:/db_data
     networks:
       - POLLING_BACKEND
+    ports:
+      - "5314:5432"
 
   redis:
     image: "redis:alpine"
@@ -37,23 +36,23 @@ services:
       - deploy/envs/celery_worker.env
       - deploy/envs/polling_api.env
       - deploy/envs/jwt.env
-    networks:
-      - POLLING_BACKEND
     depends_on:
       - polling_db
       - redis
+    networks:
+      - POLLING_BACKEND
 
   users_db:
     image: "postgres:15-alpine"
     restart: "no"
-    ports:
-      - "5313:5432"
     env_file:
       - deploy/envs/users_db.env
     volumes:
       - USER_MANAGEMENT_DATA:/db_data
     networks:
       - POLLING_BACKEND
+    ports:
+      - "5313:5432"
 
   users_api:
     build:
@@ -63,11 +62,31 @@ services:
       - ./users_api/src:/home/users_api
     depends_on:
       - users_db
-    networks:
-      - POLLING_BACKEND
-    ports:
-      - "8000:8000"
     env_file:
       - deploy/envs/users_api.env
       - deploy/envs/celery_worker.env
       - deploy/envs/jwt.env
+    networks:
+      - POLLING_BACKEND
+    ports:
+      - "8000:8000"
+
+  polling_api:
+    build:
+      context: .
+      dockerfile: polling_api.Dockerfile
+    volumes:
+      - ./polling_api:/home/polling_api
+    env_file:
+      - deploy/envs/celery_worker.env
+      - deploy/envs/polling_api.env
+      - deploy/envs/jwt.env
+    depends_on:
+      - celery-worker
+      - users_api
+      - polling_db
+      - redis
+    networks:
+      - POLLING_BACKEND
+    ports:
+      - "4030:8030"
