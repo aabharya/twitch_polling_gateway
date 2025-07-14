@@ -7,8 +7,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-ADD ./users_api/uv.lock /home/dependencies/uv.lock
-ADD ./users_api/pyproject.toml /home/dependencies/pyproject.toml
+ADD ./docs_api/uv.lock /home/dependencies/uv.lock
+ADD ./docs_api/pyproject.toml /home/dependencies/pyproject.toml
 WORKDIR /home/dependencies
 
 ENV UV_COMPILE_BYTECODE=1
@@ -20,14 +20,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 RUN --mount=type=cache,target=/root/.cache \
     uv sync --frozen --no-dev
 
-ADD ./users_api/src /home/users_api
-WORKDIR /home/users_api
+ADD ./docs_api/ /home/docs_api
 
-COPY deploy/docker/users_api.sh /docker-entrypoint.sh
+WORKDIR /home/
 
+COPY deploy/docker/docs_api.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["sh", "/docker-entrypoint.sh"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:8000/ht/ || exit 1
-

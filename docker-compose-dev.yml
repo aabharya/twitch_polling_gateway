@@ -17,6 +17,11 @@ services:
       - POLLING_BACKEND
     ports:
       - "5314:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: "redis:alpine"
@@ -25,22 +30,11 @@ services:
       - POLLING_BACKEND
     ports:
       - "63790:6379"
-
-  celery-worker:
-    build:
-      context: .
-      dockerfile: celery_worker.Dockerfile
-    volumes:
-      - ./polling_api:/home/polling_api
-    env_file:
-      - deploy/envs/celery_worker.env
-      - deploy/envs/polling_api.env
-      - deploy/envs/jwt.env
-    depends_on:
-      - polling_db
-      - redis
-    networks:
-      - POLLING_BACKEND
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   users_db:
     image: "postgres:15-alpine"
@@ -53,23 +47,31 @@ services:
       - POLLING_BACKEND
     ports:
       - "5313:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   users_api:
+    hostname: users-api
     build:
       context: .
       dockerfile: users_api.Dockerfile
     volumes:
       - ./users_api/src:/home/users_api
-    depends_on:
-      - users_db
     env_file:
       - deploy/envs/users_api.env
       - deploy/envs/celery_worker.env
       - deploy/envs/jwt.env
     networks:
       - POLLING_BACKEND
+    depends_on:
+      users_db:
+        condition: service_healthy
 
   polling_api:
+    hostname: polling-api
     build:
       context: .
       dockerfile: polling_api.Dockerfile
@@ -79,22 +81,69 @@ services:
       - deploy/envs/celery_worker.env
       - deploy/envs/polling_api.env
       - deploy/envs/jwt.env
-    depends_on:
-      - celery-worker
-      - users_api
-      - polling_db
-      - redis
     networks:
       - POLLING_BACKEND
+    depends_on:
+      users_api:
+        condition: service_healthy
+      polling_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: celery_worker.Dockerfile
+    volumes:
+      - ./polling_api:/home/polling_api
+    env_file:
+      - deploy/envs/celery_worker.env
+      - deploy/envs/polling_api.env
+      - deploy/envs/jwt.env
+    networks:
+      - POLLING_BACKEND
+    depends_on:
+      polling_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      users_api:
+        condition: service_healthy
+      polling_api:
+        condition: service_healthy
+
+
+  docs_api:
+    hostname: docs-api
+    build:
+      context: .
+      dockerfile: docs_api.Dockerfile
+    volumes:
+      - ./docs_api/src:/home/docs_api
+    env_file:
+      - deploy/envs/docs_api.env
+    networks:
+      - POLLING_BACKEND
+    depends_on:
+      users_api:
+        condition: service_healthy
+      polling_api:
+        condition: service_healthy
 
   gateway:
     image: "nginx:1.17.8-alpine"
     volumes:
       - ./deploy/docker/nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - users_api
-      - polling_api
     networks:
       - POLLING_BACKEND
     ports:
       - "8000:80"
+    depends_on:
+      users_api:
+        condition: service_healthy
+      polling_api:
+        condition: service_healthy
+      docs_api:
+        condition: service_healthy
+

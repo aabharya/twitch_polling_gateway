@@ -28,3 +28,8 @@ api.add_middleware(
 )
 api.add_middleware(AuthenticationMiddleware)
 api.add_middleware(ExceptionMiddleware)
+
+
+@api.get('/ht/')
+def healthcheck():
+    return {'status': 'ok'}
