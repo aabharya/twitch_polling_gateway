@@ -63,6 +63,6 @@ app_configs: dict[str, Any] = {
     'title': 'Twitch Polling API',
     'description': 'Minimal twitch polling api built with FastAPI',
     'debug': settings.DEBUG,
-    'root_path': f'/{settings.GATEWAY_PREFIX}api/v1',
+    'openapi_url': '/polling/schema/',
     'swagger_ui_parameters': {'defaultModelsExpandDepth': -1},
 }

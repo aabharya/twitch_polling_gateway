@@ -7,7 +7,6 @@ from . import services
 from .depends import CurrentUser, UserByID
 from .models import UserDetail
 
-auth_router = APIRouter()
 user_router = APIRouter()
 
 

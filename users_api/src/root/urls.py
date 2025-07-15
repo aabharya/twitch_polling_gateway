@@ -31,6 +31,7 @@ non_prefixed_urls = admin_urls + api_schema_urls + api_urls
 
 urlpatterns = [
     path(f'{settings.GATEWAY_PREFIX}', include(non_prefixed_urls)),
+    path('users/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('ht/', health_check, name='health-check'),
 ]
 
