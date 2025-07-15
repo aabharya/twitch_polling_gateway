@@ -14,6 +14,8 @@ WORKDIR /home/dependencies
 ENV UV_COMPILE_BYTECODE=1
 ENV PATH="/home/dependencies/.venv/bin:$PATH"
 
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=cache,target=/root/.cache \
     uv sync --frozen --no-dev

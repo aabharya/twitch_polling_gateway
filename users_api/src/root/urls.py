@@ -6,6 +6,8 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
+from root.health_check import health_check
+
 admin_urls = [
     path('ad6o69ms7in/', admin.site.urls),
 ]
@@ -27,7 +29,10 @@ api_urls = [
 non_prefixed_urls = admin_urls + api_schema_urls + api_urls
 
 
-urlpatterns = [path(f'{settings.GATEWAY_PREFIX}', include(non_prefixed_urls))]
+urlpatterns = [
+    path(f'{settings.GATEWAY_PREFIX}', include(non_prefixed_urls)),
+    path('ht/', health_check, name='health-check'),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
