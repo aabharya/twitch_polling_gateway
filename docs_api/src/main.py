@@ -5,8 +5,8 @@ from typing import Any, AsyncGenerator
 import httpx
 from fastapi import FastAPI
 
-USERS_API_SCHEMA_URL = os.getenv('USERS_API_SCHEMA_URL', 'http://localhost:8000/gateway/auth/api/schema/')
-POLLING_API_SCHEMA_URL = os.getenv('USERS_API_SCHEMA_URL', 'http://localhost:8000/gateway/polling/api/v1/openapi.json')
+USERS_API_SCHEMA_URL = os.getenv('USERS_API_SCHEMA_URL', 'http://users-api:8000/users/schema/')
+POLLING_API_SCHEMA_URL = os.getenv('POLLING_API_SCHEMA_URL', 'http://polling-api:8000/polling/schema/')
 
 
 class OpenApiMerger:

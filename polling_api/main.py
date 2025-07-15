@@ -30,6 +30,6 @@ api.add_middleware(AuthenticationMiddleware)
 api.add_middleware(ExceptionMiddleware)
 
 
-@api.get('/ht/')
+@api.get('/ht/', include_in_schema=False)
 def healthcheck():
     return {'status': 'ok'}
