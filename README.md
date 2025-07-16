@@ -1,64 +1,34 @@
-# Twitch Polling Minimal API
+# Twitch Polling Gateway
 
-
-
+A minimal polling and user management API stack with FastAPI, Django, PostgreSQL, Redis, Celery, and NGINX as a gateway.
 
 ## Prerequisites
 
 - `Python 3.11`
-- `Postgresql 15`
 
+## Architecture
+
+| Service         | Description                               |
+| --------------- |-------------------------------------------|
+| `polling_db`    | PostgreSQL database for polling API       |
+| `users_db`      | PostgreSQL database for user management   |
+| `redis`         | Redis in-memory store for Celery broker   |
+| `users_api`     | Djano app for user management api         |
+| `polling_api`   | FastAPI app for polling api               |
+| `docs_api`      | FastAPI app gateway serving documentation |
+| `celery-worker` | Celery worker for async task processing   |
+| `gateway`       | NGINX reverse proxy gateway for APIs      |
 
 ## Development
 
-### `.env` example
+### `.env` files
 
-```shell
-DEBUG=True
-SECRET_KEY=super_secret_key
-DB_URL=postgres://postgres:password@localhost/database_name
-PAGINATION_PER_PAGE=20
-JWT_SIGNING_KEY=secret_key
-JWT_ALG=HS256
-JWT_EXP=86400
-```
+In `deploy/docker/envs` all env variables are defined and categorized around their service names.
 
-### Database setup
-
-Run database server
-
-```shell
-docker compose -f ./docker-compose-dev.yml up
-```
-
-Create your first migration
-
-```shell
-alembic revision --autogenerate
-```
-
-Upgrading the database when new migrations are created
-
-```shell
-alembic upgrade head
-```
-
-### Run fastapi app
+### Run Gateway
 
 ```shell
 make dev
 ```
 
-Check API documentation at `localhost:8000/docs` or `localhost:8000/redoc`
-
-### Run database migrations
-
-```shell
-make migrate
-```
-
-### Run tests
-
-```shell
-make test
-```
+Check API documentation at `localhost:8000/docs`
