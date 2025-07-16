@@ -120,15 +120,12 @@ SHELL_PLUS_POST_IMPORTS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'fa-ir'
-
-TIME_ZONE = 'Asia/Tehran'
-
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
+TIME_ZONE = 'UTC'
 
 DEFAULT_DATE_ONLY_FORMAT = '%Y-%m-%d'
 DEFAULT_DATETIME_FORMAT = '%Y-%m-%d %H:%M'
@@ -186,6 +183,9 @@ DJOSER = {
 GATEWAY_PREFIX = config('GATEWAY_PREFIX', default='gateway/', cast=str)
 
 GATEWAY_CONSUMERS = config('GATEWAY_CONSUMERS', default='', cast=Csv())
+
+GATEWAY_USER_CREATE_TASK_NAME = config('GATEWAY_USER_CREATE_TASK_NAME', default='', cast=str)
+GATEWAY_USER_UPDATE_TASK_NAME = config('GATEWAY_USER_UPDATE_TASK_NAME', default='', cast=str)
 
 config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000,http://127.0.0.1:3000', cast=Csv())
 SPECTACULAR_SETTINGS = {
