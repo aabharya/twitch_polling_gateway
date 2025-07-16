@@ -55,6 +55,8 @@ class Settings(BaseSettings):
     JWT_LIFETIME: int = 300  # Seconds
     JWT_USER_KEY: str
     GATEWAY_PREFIX: str
+    GATEWAY_USER_CREATE_TASK_NAME: str
+    GATEWAY_USER_UPDATE_TASK_NAME: str
 
 
 settings = Settings()

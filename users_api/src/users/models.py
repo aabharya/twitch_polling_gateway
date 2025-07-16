@@ -8,8 +8,11 @@ from . import managers
 
 
 class User(AbstractUser):
-    objects = managers.UserObjectManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     public_id = models.UUIDField(default=uuid4, editable=False)
+
+    objects = managers.UserObjectManager()
 
     class Meta:
         verbose_name = _('user')
