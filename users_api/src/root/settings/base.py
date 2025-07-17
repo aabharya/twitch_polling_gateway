@@ -260,5 +260,5 @@ MESSAGE_TAGS = {
 
 # Celery Configs
 CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://:@localhost:63790/0', cast=str)
-CELERY_TIMEZONE = 'Asia/Tehran'
+CELERY_TIMEZONE = 'UTC'
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://:@localhost:63790/0', cast=str)

@@ -2,13 +2,14 @@ import logging
 from datetime import datetime
 
 from polling_api.core.celery import app
+from polling_api.core.config import settings
 from polling_api.database.depends import get_db_session
 from polling_api.polls.models import Poll, PollStatus
 
 logger = logging.getLogger('tasks')
 
 
-@app.task(name='finish_poll_after_countdown')
+@app.task(name='finish_poll_after_countdown', queue=settings.CELERY_QUEUE_NAME)
 def finish_poll_after_countdown(poll_id: int):
     db_session = get_db_session()
     poll = db_session.query(Poll).filter_by(id=poll_id).one_or_none()

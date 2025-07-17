@@ -21,7 +21,7 @@ def ensure_utc(dt):
     return dt.replace(tzinfo=timezone.utc)
 
 
-@app.task(name=settings.GATEWAY_USER_CREATE_TASK_NAME)
+@app.task(name=settings.GATEWAY_USER_CREATE_TASK_NAME, queue=settings.CELERY_QUEUE_NAME)
 def create_user_from_gateway(
     created_at: str,
     updated_at: str,
@@ -48,7 +48,7 @@ def create_user_from_gateway(
     db_session.close()
 
 
-@app.task(name=settings.GATEWAY_USER_UPDATE_TASK_NAME)
+@app.task(name=settings.GATEWAY_USER_UPDATE_TASK_NAME, queue=settings.CELERY_QUEUE_NAME)
 def update_user_from_gateway(
     created_at: str,
     updated_at: str,
