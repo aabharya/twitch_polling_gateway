@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sentry_asgi import SentryMiddleware
 
+from polling_api.core import checks
 from polling_api.core.config import app_configs, settings
 from polling_api.core.lifespan import lifespan
 from polling_api.core.middleware import AuthenticationMiddleware, ExceptionMiddleware, LoggingMiddleware
+from polling_api.database import DbSession
 from polling_api.routes import api_router
 
 
@@ -31,5 +33,5 @@ api.add_middleware(ExceptionMiddleware)
 
 
 @api.get('/ht/', include_in_schema=False)
-def healthcheck():
-    return {'status': 'ok'}
+def healthcheck_api(db_session: DbSession):
+    return checks.health_check_db_celery(db_session)

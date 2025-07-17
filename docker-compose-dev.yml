@@ -70,6 +70,24 @@ services:
       users_db:
         condition: service_healthy
 
+  celery-worker:
+    build:
+      context: .
+      dockerfile: celery_worker.Dockerfile
+    volumes:
+      - ./polling_api:/home/polling_api
+    env_file:
+      - deploy/envs/celery_worker.env
+      - deploy/envs/polling_api.env
+      - deploy/envs/jwt.env
+    networks:
+      - POLLING_BACKEND
+    depends_on:
+      polling_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   polling_api:
     hostname: polling-api
     build:
@@ -90,29 +108,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-
-  celery-worker:
-    build:
-      context: .
-      dockerfile: celery_worker.Dockerfile
-    volumes:
-      - ./polling_api:/home/polling_api
-    env_file:
-      - deploy/envs/celery_worker.env
-      - deploy/envs/polling_api.env
-      - deploy/envs/jwt.env
-    networks:
-      - POLLING_BACKEND
-    depends_on:
-      polling_db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      users_api:
-        condition: service_healthy
-      polling_api:
-        condition: service_healthy
-
 
   docs_api:
     hostname: docs-api
