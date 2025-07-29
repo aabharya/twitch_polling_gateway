@@ -28,6 +28,7 @@ dependencies = [
     'pytz',
     'celery>=5.5.3',
     'redis>=6.2.0',
+    'orjson>=3.11.1',
 ]
 
 [tool.uv]

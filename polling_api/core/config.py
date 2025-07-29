@@ -2,6 +2,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from fastapi.responses import ORJSONResponse
 from pydantic import ConfigDict, PostgresDsn
 from pydantic_settings import BaseSettings
 
@@ -68,4 +69,5 @@ app_configs: dict[str, Any] = {
     'debug': settings.DEBUG,
     'openapi_url': '/polling/schema/',
     'swagger_ui_parameters': {'defaultModelsExpandDepth': -1},
+    'default_response_class': ORJSONResponse,
 }
