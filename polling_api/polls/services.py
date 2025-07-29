@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from .models import Poll, PollOption, PollStatus, Vote
@@ -5,6 +7,14 @@ from .models import Poll, PollOption, PollStatus, Vote
 
 def create_poll(*, db_session: Session, title: str, user_id: int):
     poll = Poll(title=title, created_by_id=user_id, status=PollStatus.STARTED)
+    db_session.add(poll)
+    db_session.commit()
+    return poll
+
+
+def start_poll(*, db_session: Session, poll: Poll) -> Poll:
+    poll.status = PollStatus.STARTED
+    poll.started_at = datetime.utcnow()
     db_session.add(poll)
     db_session.commit()
     return poll

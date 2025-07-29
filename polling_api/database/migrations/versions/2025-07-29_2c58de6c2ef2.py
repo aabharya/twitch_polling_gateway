@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0822d523a0ca
+Revision ID: 2c58de6c2ef2
 Revises: 
-Create Date: 2025-07-13 20:37:29.323605
+Create Date: 2025-07-29 23:19:00.059861
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0822d523a0ca'
+revision: str = '2c58de6c2ef2'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,7 +39,8 @@ def upgrade() -> None:
     op.create_table('polls',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=False),
-    sa.Column('status', sa.Enum('STARTED', 'FINISHED', 'CANCELED', name='pollstatus'), nullable=False),
+    sa.Column('status', sa.Enum('CREATED', 'STARTED', 'FINISHED', 'CANCELED', name='pollstatus'), nullable=False),
+    sa.Column('started_at', sa.DateTime(), nullable=True),
     sa.Column('finished_at', sa.DateTime(), nullable=True),
     sa.Column('created_by_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),

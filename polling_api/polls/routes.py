@@ -16,7 +16,6 @@ def create_new_poll(db_session: DbSession, current_user: CurrentUser, payload: P
     if not current_user.is_moderator:
         raise exceptions.PermissionDenied(detail='You are not allowed to create a poll')
     new_poll = services.create_poll(db_session=db_session, title=payload.title, user_id=current_user.id)
-    tasks.finish_poll_after_countdown.apply_async(args=[new_poll.id], countdown=new_poll.COUNT_DOWN)
     return new_poll
 
 
@@ -32,6 +31,17 @@ def create_new_poll_option(
     return poll
 
 
+@poll_router.post('/{poll_id}/start/', response_model=PollDetail, status_code=status.HTTP_200_OK)
+def start_poll(db_session: DbSession, current_user: CurrentUser, poll: PollByID):
+    if not current_user.is_moderator:
+        raise exceptions.PermissionDenied(detail='You are not allowed to create a poll')
+    if poll.is_started:
+        raise exceptions.PermissionDenied(detail=f'Poll #{poll.id} has already been started')
+    poll = services.start_poll(db_session=db_session, poll=poll)
+    tasks.finish_poll_after_countdown.apply_async(args=[poll.id], countdown=poll.COUNT_DOWN)
+    return poll
+
+
 @poll_router.post('/{poll_id}/vote/', response_model=PollDetail, status_code=status.HTTP_201_CREATED)
 def create_new_vote(db_session: DbSession, current_user: CurrentUser, poll: PollByID, payload: VoteCreatePayload):
     if poll.is_finished:
@@ -42,5 +52,4 @@ def create_new_vote(db_session: DbSession, current_user: CurrentUser, poll: Poll
 
 @poll_router.get('/{poll_id}/', response_model=PollDetail)
 def get_poll_info(db_session: DbSession, poll: PollByID):
-    tasks.celery_ping_test.apply_async(args=[poll.id])
     return poll

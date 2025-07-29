@@ -11,6 +11,7 @@ from polling_api.users.models import UserDetail
 
 
 class PollStatus(enum.Enum):
+    CREATED = 'CR'
     STARTED = 'ST'
     FINISHED = 'FN'
     CANCELED = 'CN'
@@ -22,7 +23,8 @@ class Poll(Base, TimeStampedModel):
 
     id = Column(Integer, primary_key=True)
     title = Column(String(64), nullable=False)
-    status = Column(Enum(PollStatus), nullable=False, default=PollStatus.STARTED)
+    status = Column(Enum(PollStatus), nullable=False, default=PollStatus.CREATED)
+    started_at = Column(DateTime, nullable=True)
     finished_at = Column(DateTime, nullable=True)
 
     created_by_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
@@ -36,6 +38,10 @@ class Poll(Base, TimeStampedModel):
     @property
     def is_finished(self) -> bool:
         return self.status == PollStatus.FINISHED
+
+    @property
+    def is_started(self) -> bool:
+        return self.status == PollStatus.STARTED
 
 
 class PollOption(Base, TimeStampedModel):
