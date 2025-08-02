@@ -1,5 +1,7 @@
 import asyncio
+import datetime
 import json
+import uuid
 
 import redis.asyncio as redis
 from fastapi import APIRouter, Request
@@ -22,8 +24,14 @@ async def event_stream(request):
         await asyncio.sleep(0.1)
 
 
-async def send_event(data) -> None:
-    await redis_client.publish('sse_channel', json.dumps(data))
+async def send_event(event_type: str, message: str) -> None:
+    event_context = {
+        'event_type': event_type,
+        'message_id': str(uuid.uuid4()),
+        'message_timestamp': datetime.datetime.now().isoformat(sep='T', timespec='auto'),
+        'message': message,
+    }
+    await redis_client.publish('sse_channel', json.dumps(event_context))
 
 
 event_router = APIRouter()

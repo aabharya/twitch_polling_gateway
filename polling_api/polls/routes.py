@@ -17,7 +17,7 @@ async def create_new_poll(db_session: DbSession, current_user: CurrentUser, payl
     if not current_user.is_moderator:
         raise exceptions.PermissionDenied(detail='You are not allowed to create a poll')
     new_poll = services.create_poll(db_session=db_session, title=payload.title, user_id=current_user.id)
-    await send_event(data={'message': f'created new poll #{new_poll.id}'})
+    await send_event(event_type='new_polling', message=f'created new poll #{new_poll.id}')
     return new_poll
 
 
