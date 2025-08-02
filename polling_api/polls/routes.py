@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 
 from polling_api.core import exceptions
+from polling_api.core.events import send_event
 from polling_api.database import DbSession
 from polling_api.users.depends import CurrentUser
 
@@ -12,10 +13,11 @@ poll_router = APIRouter()
 
 
 @poll_router.post('/', response_model=PollDetail, status_code=status.HTTP_201_CREATED)
-def create_new_poll(db_session: DbSession, current_user: CurrentUser, payload: PollCreatePayload):
+async def create_new_poll(db_session: DbSession, current_user: CurrentUser, payload: PollCreatePayload):
     if not current_user.is_moderator:
         raise exceptions.PermissionDenied(detail='You are not allowed to create a poll')
     new_poll = services.create_poll(db_session=db_session, title=payload.title, user_id=current_user.id)
+    await send_event(data={'message': f'created new poll #{new_poll.id}'})
     return new_poll
 
 

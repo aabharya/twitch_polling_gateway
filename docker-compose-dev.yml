@@ -126,6 +126,20 @@ services:
       polling_api:
         condition: service_healthy
 
+  pushpin:
+    hostname: pushpin
+    image: fanout/pushpin
+    restart: unless-stopped
+    ports:
+      - "7999:7999"
+    volumes:
+      - ./deploy/docker/pushpin:/etc/pushpin:ro
+    networks:
+      - POLLING_BACKEND
+    depends_on:
+      redis:
+        condition: service_healthy
+
   gateway:
     image: "nginx:1.17.8-alpine"
     volumes:

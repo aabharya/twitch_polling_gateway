@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Poll Event Listener</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+    #messages {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .message {
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Poll Events</h2>
+
+<label for="pollId">Poll ID:</label>
+<input type="number" id="pollId" value="1" />
+<button onclick="connect()">Connect</button>
+
+<div id="messages"></div>
+
+<script>
+  let source;
+
+  function connect() {
+    const pollId = document.getElementById("pollId").value;
+    const url = `http://localhost:7999/gateway/polling/sse/`;
+    if (source) source.close();
+
+    source = new EventSource(url);
+
+    source.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      console.log(data)
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message";
+      msgDiv.textContent = data?.message != null ? `Message: ${data.message}` : 'Message: -';
+      document.getElementById("messages").appendChild(msgDiv);
+    };
+
+    source.onerror = function (err) {
+      console.error("SSE connection error:", err);
+    };
+  }
+</script>
+
+</body>
+</html>
