@@ -9,9 +9,10 @@ A minimal polling and user management API stack with FastAPI, Django, PostgreSQL
 ## Architecture
 
 | Service         | Description                               |
-| --------------- |-------------------------------------------|
+|-----------------|-------------------------------------------|
 | `polling_db`    | PostgreSQL database for polling API       |
 | `users_db`      | PostgreSQL database for user management   |
+| `adminer`       | Database dashboard                        |
 | `redis`         | Redis in-memory store for Celery broker   |
 | `users_api`     | Djano app for user management api         |
 | `polling_api`   | FastAPI app for polling api               |
